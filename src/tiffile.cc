@@ -1,6 +1,6 @@
 /*
  * tiffile.cc
- * Copyright (C) Jonathan Bramble 2011
+ * Copyright (C) Jonathan Bramble 2013
  * 
 frap-tool is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,6 +15,7 @@ frap-tool is free software: you can redistribute it and/or modify it
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 
 #include "tiffile.h" 
 
@@ -44,6 +45,8 @@ Tiffile::Tiffile(std::string _filename){
         std::cout << ".." << filename << "...";		//output file information
 	
 	char *cstr;
+	const char *to_parse;
+
 	cstr = new char [filename.size()+1];
     	strcpy (cstr, filename.c_str());
 	
@@ -56,7 +59,32 @@ Tiffile::Tiffile(std::string _filename){
 	TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &imagewidth);  //get image scales
 	TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &imageheight);
 
-	char* datetime[4];
+	TIFFGetField(tif, TIFFTAG_IMAGEDESCRIPTION, &imagedescription);
+
+	Ome *omeparser = new Ome(imagedescription);
+	to_parse = omeparser->getimagetime();
+	
+	strptime(to_parse, "%Y-%m-%dT%T", &imagetime);
+	char* mytime = asctime( &imagetime );
+
+	//std::cout << mytime << std::endl;
+  
+  imagetime.tm_isdst = 0;   // ignors daylight saving settings - otherwise we get an hour shifted
+	time_t result = mktime(&imagetime);
+
+	l_seconds = long(result);
+	//d_seconds = (double)(long(result));
+
+	TIFFClose(tif);
+	delete [] cstr;
+	delete omeparser;
+	
+	std::cout << "...complete" << std::endl;
+}
+
+}
+
+	/*char* datetime[4];
 	TIFFGetField(tif, TIFFTAG_DATETIME, &datetime); 
 
 	std::cout << *datetime;
@@ -82,16 +110,5 @@ Tiffile::Tiffile(std::string _filename){
 	strcat(to_parse,fulltime);
 	
 	strptime (to_parse, "%m/%d/%Y %H:%M:%S.", &imagetime); //use ctime function to form date time structure
-	imagetime.tm_isdst = 0;   // ignors daylight saving settings - otherwise we get an hour shifted
-	time_t result = mktime(&imagetime);
 
-	l_seconds = long(result);
-	d_seconds = (double)(long(result)+(ms/1000.0));
-
-	TIFFClose(tif);
-
-	delete [] cstr;
-	std::cout << "...complete" << std::endl;
-}
-
-}
+*/

@@ -16,7 +16,6 @@ frap-tool is free software: you can redistribute it and/or modify it
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -24,29 +23,32 @@ frap-tool is free software: you can redistribute it and/or modify it
 #include <ctime>
 
 #include <tiffio.h>
+#include "ome.h"
 
-namespace FrapTool {
+namespace FrapTool 
+{
 
 class Tiffile {
 	
 	public:
-	Tiffile(std::string _filename);
-        int getimagewidth();  //can add more if needed
-        int getimageheight();
-	std::string getfilename();
-	tm gettm();
-	long gettime(){return l_seconds;};
+		Tiffile(std::string _filename);
+    int getimagewidth();  //can add more if needed
+    int getimageheight();
+		std::string getfilename();
+		tm gettm();
+		long gettime(){return l_seconds;};
 
 	protected:
-	long int l_seconds;
-	double d_seconds;
+		long int l_seconds;
+		double d_seconds;
 	
 	private:
-	std::string filename;
-        int imagewidth;
-        int imageheight;
-	struct tm imagetime;
-	int ms;	
+		std::string filename;
+    int imagewidth;
+    int imageheight;
+		char* imagedescription;
+		struct tm imagetime;
+		int ms;	
 };
 
 }

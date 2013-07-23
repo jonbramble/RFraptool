@@ -93,64 +93,8 @@ void Frap::setclosed(std::string cfile){
     alloc_closed_name = true;
 }
 
-
-/*-- Plotting ----------------------------------------------------------------------------------*/
-/*
-void Frap::plot_graph(){
-    visu= new cimg_library::CImg<unsigned char>(s.getxsize(),s.getxsize(),1,3,255); //<a new display for the plot
-    cimg_library::CImgDisplay draw_disp(*visu,"Data Plots");	//draw the display
-    cimg_library::CImg<double> aplot(s.getxsize(),imagefiles.size(),1,1,0);
-    double point;
-    const unsigned char red[] = { 255,0,0 }, green[] = { 0,255,0 }, blue[] = { 0,0,255 };
-    //get data
-    for(uint j=0; j< imagefiles.size(); j++){
-        for(uint i=0; i< s.getxsize(); i++){
-            point = gsl_matrix_get(exp_data,j,i);   // get data for first image
-            aplot.set_linear_atXY(point,i,j);	// set data into array
-        }
-    }
-
-    while (!draw_disp.is_closed()) {
-            draw_disp.wait();
-        visu->draw_graph(aplot.get_crop(0,2,s.getxsize()-1,2),green,1,1,2,14000,100,0);  // image is fliped by swapping max and min
-        visu->draw_graph(aplot.get_crop(0,1,s.getxsize()-1,1),blue,1,1,2,14000,100,0);  // 14000 is guess at max height, needs function
-        visu->draw_graph(aplot.get_crop(0,0,s.getxsize()-1,0),red,1,1,2,14000,100,0).display(draw_disp);
-    }
-}
-*/
-
-void Frap::plplot_chart(char* _prefix){
-
-	Chart *simple_chart;	// make a chart
-	Chart *line_chart;		// make a chart
-
-    gsl_vector *x = gsl_vector_alloc(npoints);
-
-    for(int a=0;a<npoints;a++)
-    {
-        gsl_vector_set(x,a,a*scaling_factor);
-    }
-
-    char const *f_name_gauss;
-    char const *f_name_lin;
-    f_name_gauss = "gaussian_file.ps"; //names for files
-    f_name_lin = "linear_file.ps";
-
-    simple_chart = new Chart(f_name_gauss);	// create a new chart object
-    simple_chart->plot(npoints,x,exp_data,fitting_data);
-
-    line_chart = new Chart(f_name_lin);
-    line_chart->plot(frapimages.size(),time_s,lambda_2,lambda_err_2, c1, c0);
-
-    gsl_vector_free(x);
-
-	delete simple_chart;
-	delete line_chart;
-}
-
-
 /*-- Processing ---------------------------------------------------------------------------------*/
-void Frap::setimagenames(vector<std::string> ifiles){
+void Frap::setimagenames(std::vector<std::string> ifiles){
     frapimages.clear();
     for(fnameit=ifiles.begin(); fnameit<ifiles.end(); fnameit++){
         Frapimage tmpimage(*fnameit);
@@ -246,7 +190,7 @@ void Frap::save_data_file(char* _prefix){
     //strcat(str_fullset,"-data-set.csv");
     //strcat(str_linear_fit,"-linear-fit.csv");
 
-    ofstream data_file;
+    std::ofstream data_file;
 
     std::cout << "Writing Datafiles...";
 

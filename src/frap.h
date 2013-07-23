@@ -1,5 +1,5 @@
 /*
- * fitting.h
+ * frap.h
  * Copyright (C) Jonathan Bramble 2011
  * 
 frap-tool is free software: you can redistribute it and/or modify it
@@ -25,7 +25,6 @@ frap-tool is free software: you can redistribute it and/or modify it
 #include "unistd.h"
 #include "selection.h"
 
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -37,11 +36,9 @@ frap-tool is free software: you can redistribute it and/or modify it
 
 #include "frapimage.h"
 #include "fitting.h"
-#include "chart.h"
 
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
-
 
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
@@ -50,8 +47,8 @@ namespace FrapTool {
 
 class Frap {
 	public: 
-        Frap(std::string pfile, std::string cfile, bool verbose);
-	Frap();
+    Frap(std::string pfile, std::string cfile, bool verbose);
+	  Frap();
 		~Frap(); //<must allocate mem to data before calling free
 		
 		void processdata();
@@ -59,35 +56,32 @@ class Frap {
 
 		gsl_matrix* get_exp_data();
 		gsl_matrix* get_fitting_data();
-		void setimagenames(vector<std::string> ifiles);
+		void setimagenames(std::vector<std::string> ifiles);
 		void setprima(std::string prima);
 		void setclosed(std::string closed);
 
-		void plot_graph();
-		void plplot_chart(char* _prefix);
-
 		void save_data_file(char* _prefix);
 		void print_data();
-        double dif_const();
-        double get_c();
-        double get_m();
-        void get_results(std::vector<result> &results);
+    double dif_const();
+    double get_c();
+    double get_m();
+    void get_results(std::vector<result> &results);
 
-        bool selected();
+    bool selected();
 
 	private:
-        char* prima;
-        char* closed;
+    char* prima;
+    char* closed;
 		bool verbose;
-        bool alloc_prima_name;      // see if file names are allocated
-        bool alloc_closed_name;
+    bool alloc_prima_name;      // see if file names are allocated
+    bool alloc_closed_name;
 
 		int npoints;			 // number of points to use in selection interpolation
 		double pixlen;			 //<pixel scaling factor - from microscope
 		double scaling_factor; 	 //<pixel scaling factor - from selection length
-        double start_time;      // start time should be editable
-        Selection *s;
-	bool sel_made;
+    double start_time;      // start time should be editable
+    Selection *s;
+	  bool sel_made;
 
 		gsl_matrix *exp_data;		//<for output data
 		gsl_matrix *fitting_data;	//<for output data
